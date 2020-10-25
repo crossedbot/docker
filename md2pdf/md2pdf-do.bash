@@ -18,7 +18,7 @@ usage()
 
 where:
     -h  show this help text
-    -o  output target for the converted PDF; defaults to index.html" 
+    -o  output target for the converted PDF; defaults to output.pdf" 
     exit
 }
 
