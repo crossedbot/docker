@@ -18,7 +18,6 @@ ARG READIES_PATH
 WORKDIR /build
 COPY --from=redis /usr/local/ /usr/local/
 ADD ${READIES_PATH}/. /build
-RUN ls -al /build
 RUN ./bin/getpy2
 
 # Build RediSearch
@@ -32,10 +31,7 @@ ARG REDISEARCH_PATH
 RUN echo "Building RediSearch for ${OS_NICKNAME} (${OS}) for ${ARCH}"
 WORKDIR /build
 
-# COPY --from=redis /usr/local/ /usr/local/
 ADD ${REDISEARCH_PATH}/. /build
-
-# RUN ./deps/readies/bin/getpy2
 RUN ./system-setup.py
 RUN /usr/local/bin/redis-server --version
 RUN make fetch SHOW=1
@@ -52,10 +48,7 @@ ARG REDISGEARS_PATH
 RUN echo "Building RedisGears for ${OS_NICKNAME} (${OS}) for ${ARCH}"
 WORKDIR /build
 
-# COPY --from=redis /usr/local/ /usr/local/
 ADD ${REDISGEARS_PATH}/. /build
-
-# RUN ./deps/readies/bin/getpy2
 RUN ./system-setup.py
 RUN make fetch SHOW=1
 RUN make all SHOW=1
