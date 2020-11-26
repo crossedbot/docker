@@ -10,18 +10,22 @@ ARG READIES_PATH=modules/readies
 ARG REDISEARCH_PATH=modules/RediSearch
 ARG REDISGEARS_PATH=modules/RedisGears
 
+#-------------------------------------------------------------------------------
+# Build Redis base
 FROM redisfab/redis:${REDIS_VERSION}-${ARCH}-${OS_NICKNAME} AS redis
 
-# Create a base image with python2 installed
-FROM ${OS} as pybuilder
+#-------------------------------------------------------------------------------
+# Build Python base
+FROM ${OS} AS pybuilder
 ARG READIES_PATH
 WORKDIR /build
 COPY --from=redis /usr/local/ /usr/local/
 ADD ${READIES_PATH}/. /build
 RUN ./bin/getpy2
 
+#-------------------------------------------------------------------------------
 # Build RediSearch
-FROM pybuilder as rsbuilder
+FROM pybuilder AS rsbuilder
 
 ARG OS_NICKNAME
 ARG OS
@@ -37,8 +41,9 @@ RUN /usr/local/bin/redis-server --version
 RUN make fetch SHOW=1
 RUN make build SHOW=1
 
-# BUILD RedisGears
-FROM pybuilder as rgbuilder
+#-------------------------------------------------------------------------------
+# Build RedisGears
+FROM pybuilder AS rgbuilder
 
 ARG OS_NICKNAME
 ARG OS
@@ -54,19 +59,34 @@ RUN make fetch SHOW=1
 RUN make all SHOW=1
 RUN ./getver > artifacts/VERSION
 
+#-------------------------------------------------------------------------------
 # Build and run redis-server
 FROM redisfab/redis:${REDIS_VERSION}-${ARCH}-${OS_NICKNAME}
+
+RUN apt update && \
+    apt-get install -y \
+        git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /usr/lib/redis/modules
 RUN mkdir -p /var/opt/redislabs/lib/modules /var/opt/redislabs/artifacts
 
 COPY --from=rsbuilder /build/build/redisearch.so /usr/lib/redis/modules
 COPY --from=rgbuilder /build/redisgears.so /usr/lib/redis/modules
-COPY --from=rgbuilder /build/bin/linux-x64-release/python3_* /var/opt/redislabs/modules/rg/python3/
+COPY --from=rgbuilder /build/bin/linux-x64-release/python3_* \
+    /var/opt/redislabs/modules/rg/python3/
 COPY --from=rgbuilder /build/artifacts/ /var/opt/redislabs/artifacts
 
 RUN cd /var/opt/redislabs/modules/rg/ && \
     ln -s python3 python3_`cat /var/opt/redislabs/artifacts/VERSION`
+
+# install RedisGears utilities
+RUN P_VERSION=`cat /var/opt/redislabs/artifacts/VERSION` && \
+    /var/opt/redislabs/modules/rg/python3_${P_VERSION}/bin/python3 -m \
+        pip install git+https://github.com/RedisGears/gears-cli.git && \
+    /var/opt/redislabs/modules/rg/python3_${P_VERSION}/bin/python3 -m \
+        pip install git+https://github.com/RedisGears/rgsync.git
 
 CMD [ \
     "--loadmodule", "/usr/lib/redis/modules/redisearch.so", \

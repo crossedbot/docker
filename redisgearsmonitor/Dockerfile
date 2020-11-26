@@ -5,8 +5,13 @@ RUN apt update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+
+COPY ./rgmonitor.bash /usr/local/bin/rgmonitor
+RUN chmod 0755 /usr/local/bin/rgmonitor && \
+    chown root:root /usr/local/bin/rgmonitor
+
 WORKDIR /var/opt/
 RUN git clone https://github.com/RedisGears/RedisGearsMonitor.git
 RUN cd RedisGearsMonitor && npm install
 
-ENTRYPOINT [ "node", "/var/opt/RedisGearsMonitor/main.js" ]
+ENTRYPOINT [ "rgmonitor" ]
