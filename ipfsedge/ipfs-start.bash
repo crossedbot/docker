@@ -19,6 +19,7 @@ usage()
 where:
     -h  show this help text
     -s  run as private swarm network
+    -k  set private swarm key
     -c  set cluster secret and run the cluster service
     -p  add peer to the IPFS bootstrap list
     -b  add peer to the IPFS cluster bootstrap list; when running in cluster mode"
@@ -31,12 +32,15 @@ peers=()
 cluster_peers=()
 secret=""
 run_as_swarm=false
+key=""
 
-while getopts "hsc:p:b:" opt; do
+while getopts "hsk:c:p:b:" opt; do
     case "$opt" in
     [h?]) usage
         ;;
     s)  run_as_swarm=true
+        ;;
+    k)  key="${OPTARG}"
         ;;
     c)  secret="${OPTARG}"
         ;;
@@ -56,6 +60,10 @@ if [ ${#peers[@]} -gt 0 ]; then
 fi
 if [ ${run_as_swarm} == true ]; then
     export LIBP2P_FORCE_PNET=1
+fi
+if [ -n "${key}" ]; then
+    repo_path=`ipfs repo stat | grep RepoPath | awk -F' ' '{print $2}'`
+    echo -n "${key}" > "${repo_path}/swarm.key"
 fi
 ipfs daemon > /var/log/ipfs.log 2>&1 &
 
@@ -77,4 +85,3 @@ fi
 echo "IPFS running..."
 wait
 echo "IPFS stopped - exiting..."
-
