@@ -1,2 +1,2 @@
-modules/*
+connectors/*
 !README.md
