@@ -1,0 +1,21 @@
+[submodule "redisedge/modules/readies"]
+	path = redisedge/modules/readies
+	url = https://github.com/RedisLabsModules/readies.git
+[submodule "redisedge/modules/RedisGears"]
+	path = redisedge/modules/RedisGears
+	url = https://github.com/RedisGears/RedisGears.git
+[submodule "redisedge/modules/RediSearch"]
+	path = redisedge/modules/RediSearch
+	url = https://github.com/RediSearch/RediSearch.git
+[submodule "redisedge/modules/RedisTimeSeries"]
+	path = redisedge/modules/RedisTimeSeries
+	url = https://github.com/RedisTimeSeries/RedisTimeSeries.git
+[submodule "redisedge/modules/cpython"]
+	path = redisedge/modules/cpython
+	url = https://github.com/RedisLabsModules/cpython
+[submodule "redisedge/modules/libevent"]
+	path = redisedge/modules/libevent
+	url = https://github.com/libevent/libevent
+[submodule "redisedge/modules/hiredis"]
+	path = redisedge/modules/hiredis
+	url = https://github.com/redis/hiredis
