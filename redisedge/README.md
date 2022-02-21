@@ -1,0 +1,1 @@
+Docker image containing pre-selected redis modules - originally created with Microservice architectures in mind. Not to be confused with redisfab/redisedge and/or redislabs/redisedge.
