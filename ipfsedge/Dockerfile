@@ -1,8 +1,8 @@
 FROM debian:bullseye as ipfsbuilder
 
-ARG IPFS_VERSION=v0.11.0
-ARG IPFS_CLUSTER_SERVICE_VERSION=v0.14.4
-ARG IPFS_CLUSTER_CTL_VERSION=v0.14.4
+ARG IPFS_VERSION=v0.15.0
+ARG IPFS_CLUSTER_SERVICE_VERSION=v1.0.2
+ARG IPFS_CLUSTER_CTL_VERSION=v1.0.2
 
 ENV IPFS_URL https://dist.ipfs.io/go-ipfs/${IPFS_VERSION}/go-ipfs_${IPFS_VERSION}_linux-amd64.tar.gz
 ENV IPFS_CLUSTER_SERVICE_URL https://dist.ipfs.io/ipfs-cluster-service/${IPFS_CLUSTER_SERVICE_VERSION}/ipfs-cluster-service_${IPFS_CLUSTER_SERVICE_VERSION}_linux-amd64.tar.gz
